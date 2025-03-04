@@ -1,120 +1,148 @@
-<!DOCTYPE html>
+<iframe src="data:text/html;charset=utf-8,<!DOCTYPE html>
 <html>
 <head>
     <title>Tic-Tac-Toe Game</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: white; margin: 0; padding: 0; }
-        #container { width: 790px; height: 500px; margin: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        #board { display: none; grid-template-columns: repeat(3, 150px); gap: 5px; justify-content: center; }
-        .cell { width: 150px; height: 150px; font-size: 2em; display: flex; align-items: center; justify-content: center; border: 2px solid black; cursor: pointer; }
-        #colorOptions { display: none; font-size: 1.2em; }
-        video { width: 100%; height: auto; max-width: 790px; cursor: pointer; }
+        body { text-align: center; font-family: Arial, sans-serif; }
+        #gameContainer { display: none; }
+        #board { display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 5px; width: 320px; margin: auto; }
+        .cell { width: 100px; height: 100px; font-size: 36px; text-align: center; line-height: 100px; border: 2px solid black; cursor: pointer; }
+        .hidden { display: none; }
+        video { width: 790px; height: 500px; }
     </style>
 </head>
 <body>
 
-    <div id="container">
-        <!-- First Ad Video (Clickable) -->
-        <a href="https://helloukchocoluxe.wixsite.com/en-uk/" target="_blank">
-            <video id="video1" autoplay muted playsinline>
-                <source src="https://www.dropbox.com/s/m4r2np2zsg1747k/Add%20a%20heading%20(1).mp4?raw=1" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </a>
+    <!-- Video 1 (Plays randomly every few games) -->
+    <video id="video1" class="hidden" autoplay muted playsinline onclick="window.location.href='https://helloukchocoluxe.wixsite.com/en-uk/';">
+        <source src="https://www.dropbox.com/s/m4r2np2zsg1747k/Add%20a%20heading%20(1).mp4?raw=1" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
-        <!-- Second Ad Video -->
-        <video id="video2" autoplay muted playsinline style="display:none;" onended="showColorOptions()">
-            <source src="https://www.dropbox.com/s/voq8pmp3tootn3s/Powered%20By%20(1).mp4?raw=1" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+    <!-- Video 2 (Plays only once before first game) -->
+    <video id="video2" autoplay muted playsinline onended="startGame()">
+        <source src="https://www.dropbox.com/s/voq8pmp3tootn3s/Powered%20By%20(1).mp4?raw=1" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
-        <!-- Choose CPU Color -->
-        <div id="colorOptions">
-            <h2>Pick CPU's Color</h2>
-            <button onclick="startGame('brown')" style="background-color: brown; color: white; padding: 10px;">Brown</button>
-            <button onclick="startGame('pink')" style="background-color: pink; color: black; padding: 10px;">Pink</button>
-        </div>
-
-        <!-- Game Board -->
-        <div id="board">
-            <div class="cell" onclick="makeMove(0)"></div>
-            <div class="cell" onclick="makeMove(1)"></div>
-            <div class="cell" onclick="makeMove(2)"></div>
-            <div class="cell" onclick="makeMove(3)"></div>
-            <div class="cell" onclick="makeMove(4)"></div>
-            <div class="cell" onclick="makeMove(5)"></div>
-            <div class="cell" onclick="makeMove(6)"></div>
-            <div class="cell" onclick="makeMove(7)"></div>
-            <div class="cell" onclick="makeMove(8)"></div>
-        </div>
+    <!-- Game Container -->
+    <div id="gameContainer">
+        <h1>Tic-Tac-Toe</h1>
+        <p>Pick the CPU's color:</p>
+        <button onclick="setCPUColor('brown')">Brown</button>
+        <button onclick="setCPUColor('pink')">Pink</button>
+        <div id="board"></div>
     </div>
 
     <script>
-        document.getElementById('video1').addEventListener('ended', function() {
-            document.getElementById('video1').style.display = 'none';
-            let video2 = document.getElementById('video2');
-            video2.style.display = 'block';
-            video2.play();
-        });
+        let board = ["", "", "", "", "", "", "", "", ""];
+        let currentPlayer = "X";
+        let cpuColor = "brown";
+        let gameOver = false;
+        let gameCount = 0;
 
-        function showColorOptions() {
-            document.getElementById('video2').style.display = 'none';
-            document.getElementById('colorOptions').style.display = 'block';
+        function startGame() {
+            document.getElementById("video2").classList.add("hidden");
+            document.getElementById("gameContainer").style.display = "block";
         }
 
-        let board = ["", "", "", "", "", "", "", "", ""];
-        let cpuColor = "brown"; 
-        let gameActive = false;
-
-        function startGame(color) {
+        function setCPUColor(color) {
             cpuColor = color;
-            document.getElementById("colorOptions").style.display = "none";
-            document.getElementById("board").style.display = "grid";
-            gameActive = true;
+            initializeBoard();
+        }
+
+        function initializeBoard() {
+            document.getElementById("board").innerHTML = "";
+            board = ["", "", "", "", "", "", "", "", ""];
+            gameOver = false;
+            currentPlayer = "X";
+
+            for (let i = 0; i < 9; i++) {
+                let cell = document.createElement("div");
+                cell.classList.add("cell");
+                cell.setAttribute("onclick", `makeMove(${i})`);
+                document.getElementById("board").appendChild(cell);
+            }
         }
 
         function makeMove(index) {
-            if (!gameActive || board[index] !== "") return;
+            if (board[index] === "" && !gameOver) {
+                board[index] = currentPlayer;
+                updateBoard();
 
-            board[index] = "X";
-            updateBoard();
-            if (checkWinner("X")) return endGame("You Win!");
-            if (!board.includes("")) return endGame("It's a Draw!");
+                if (checkWin()) {
+                    setTimeout(() => alert(currentPlayer === "X" ? "You Win!" : "Game Over!"), 100);
+                    restartGame();
+                    return;
+                }
 
-            setTimeout(cpuMove, 500);
+                currentPlayer = currentPlayer === "X" ? "O" : "X";
+
+                if (currentPlayer === "O") {
+                    setTimeout(cpuMove, 500);
+                }
+            }
         }
 
         function cpuMove() {
-            let emptyCells = board.map((val, idx) => val === "" ? idx : null).filter(val => val !== null);
-            let randomMove = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-            board[randomMove] = "O";
-            updateBoard();
-            if (checkWinner("O")) return endGame("Game Over: CPU Wins!");
-            if (!board.includes("")) return endGame("It's a Draw!");
+            let availableMoves = board.map((v, i) => (v === "" ? i : null)).filter(v => v !== null);
+            if (availableMoves.length > 0) {
+                let move = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+                board[move] = "O";
+                updateBoard();
+
+                if (checkWin()) {
+                    setTimeout(() => alert("Game Over!"), 100);
+                    restartGame();
+                }
+
+                currentPlayer = "X";
+            }
         }
 
         function updateBoard() {
-            document.querySelectorAll(".cell").forEach((cell, idx) => {
-                cell.innerText = board[idx];
-                if (board[idx] === "O") cell.style.color = cpuColor;
-            });
+            let cells = document.getElementsByClassName("cell");
+            for (let i = 0; i < 9; i++) {
+                cells[i].innerHTML = board[i];
+                cells[i].style.color = board[i] === "O" ? cpuColor : "black";
+            }
         }
 
-        function checkWinner(player) {
-            const winPatterns = [
-                [0, 1, 2], [3, 4, 5], [6, 7, 8],
-                [0, 3, 6], [1, 4, 7], [2, 5, 8],
-                [0, 4, 8], [2, 4, 6]
+        function checkWin() {
+            const winningCombos = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+                [0, 4, 8], [2, 4, 6] // Diagonals
             ];
-            return winPatterns.some(pattern => pattern.every(idx => board[idx] === player));
+
+            return winningCombos.some(combo =>
+                board[combo[0]] !== "" &&
+                board[combo[0]] === board[combo[1]] &&
+                board[combo[1]] === board[combo[2]]
+            );
         }
 
-        function endGame(message) {
-            gameActive = false;
-            alert(message); // 🚨 Shows a browser alert with the game result!
-            location.reload(); // 🔄 Restart the game after alert
+        function restartGame() {
+            gameCount++;
+            let showVideo1 = Math.random() < 0.3; // 30% chance to show Video 1 every few games
+
+            setTimeout(() => {
+                if (showVideo1) {
+                    document.getElementById("gameContainer").style.display = "none";
+                    document.getElementById("video1").classList.remove("hidden");
+
+                    document.getElementById("video1").onended = () => {
+                        document.getElementById("video1").classList.add("hidden");
+                        document.getElementById("gameContainer").style.display = "block";
+                        initializeBoard();
+                    };
+                } else {
+                    initializeBoard();
+                }
+            }, 1000);
         }
+
     </script>
 
 </body>
-</html>
+</html>" width="790" height="500"></iframe>
