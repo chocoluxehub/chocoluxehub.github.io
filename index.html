@@ -6,7 +6,7 @@
         body { font-family: Arial, sans-serif; text-align: center; background-color: white; margin: 0; padding: 0; }
         #board { display: none; grid-template-columns: repeat(3, 100px); gap: 5px; justify-content: center; margin-top: 20px; }
         .cell { width: 100px; height: 100px; font-size: 2em; display: flex; align-items: center; justify-content: center; border: 2px solid black; cursor: pointer; }
-        #status, #colorOptions { display: none; margin-top: 20px; font-size: 1.2em; }
+        #colorOptions { display: none; margin-top: 20px; font-size: 1.2em; }
         video { width: 90%; height: auto; max-width: 900px; display: block; margin: 10px auto; }
     </style>
 </head>
@@ -44,8 +44,6 @@
         <div class="cell" onclick="makeMove(8)"></div>
     </div>
 
-    <p id="status"></p>
-
     <script>
         function playNextVideo() {
             document.getElementById('video1').style.display = 'none';
@@ -67,8 +65,6 @@
             cpuColor = color;
             document.getElementById("colorOptions").style.display = "none";
             document.getElementById("board").style.display = "grid";
-            document.getElementById("status").style.display = "block";
-            document.getElementById("status").innerText = "Your Turn (X)";
             gameActive = true;
         }
 
@@ -110,8 +106,8 @@
 
         function endGame(message) {
             gameActive = false;
-            alert(message);
-            document.getElementById("status").innerText = message;
+            alert(message); // 🚨 Shows a browser alert with the game result!
+            location.reload(); // 🔄 Restart the game after alert
         }
     </script>
 
