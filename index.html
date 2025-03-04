@@ -44,6 +44,7 @@
         function startGame() {
             document.getElementById("video2").classList.add("hidden");
             document.getElementById("gameContainer").style.display = "block";
+            initializeBoard();
         }
 
         function setCPUColor(color) {
@@ -52,7 +53,7 @@
         }
 
         function initializeBoard() {
-            document.getElementById("board").innerHTML = "";
+            document.getElementById("board").innerHTML = ""; 
             board = ["", "", "", "", "", "", "", "", ""];
             gameOver = false;
             currentPlayer = "X";
@@ -71,8 +72,10 @@
                 updateBoard();
 
                 if (checkWin()) {
-                    setTimeout(() => alert(currentPlayer === "X" ? "You Win!" : "Game Over!"), 100);
-                    restartGame();
+                    setTimeout(() => {
+                        alert(currentPlayer === "X" ? "You Win!" : "Game Over!");
+                        restartGame();
+                    }, 300);
                     return;
                 }
 
@@ -92,8 +95,10 @@
                 updateBoard();
 
                 if (checkWin()) {
-                    setTimeout(() => alert("Game Over!"), 100);
-                    restartGame();
+                    setTimeout(() => {
+                        alert("Game Over!");
+                        restartGame();
+                    }, 300);
                 }
 
                 currentPlayer = "X";
@@ -139,9 +144,8 @@
                 } else {
                     initializeBoard();
                 }
-            }, 1000);
+            }, 500); // Short delay before restarting to prevent flicker
         }
-
     </script>
 
 </body>
