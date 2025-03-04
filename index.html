@@ -13,12 +13,6 @@
 </head>
 <body>
 
-    <!-- Video 1 (Plays randomly every few games) -->
-    <video id="video1" class="hidden" autoplay muted playsinline onclick="window.location.href='https://helloukchocoluxe.wixsite.com/en-uk/';">
-        <source src="https://www.dropbox.com/s/m4r2np2zsg1747k/Add%20a%20heading%20(1).mp4?raw=1" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-
     <!-- Video 2 (Plays only once before first game) -->
     <video id="video2" autoplay muted playsinline onended="startGame()">
         <source src="https://www.dropbox.com/s/voq8pmp3tootn3s/Powered%20By%20(1).mp4?raw=1" type="video/mp4">
@@ -39,11 +33,12 @@
         let currentPlayer = "X";
         let cpuColor = "brown";
         let gameOver = false;
-        let gameCount = 0;
+        let firstGameStarted = false;
 
         function startGame() {
             document.getElementById("video2").classList.add("hidden");
             document.getElementById("gameContainer").style.display = "block";
+            firstGameStarted = true;
             initializeBoard();
         }
 
@@ -128,23 +123,9 @@
         }
 
         function restartGame() {
-            gameCount++;
-            let showVideo1 = Math.random() < 0.3; // 30% chance to show Video 1 every few games
-
             setTimeout(() => {
-                if (showVideo1) {
-                    document.getElementById("gameContainer").style.display = "none";
-                    document.getElementById("video1").classList.remove("hidden");
-
-                    document.getElementById("video1").onended = () => {
-                        document.getElementById("video1").classList.add("hidden");
-                        document.getElementById("gameContainer").style.display = "block";
-                        initializeBoard();
-                    };
-                } else {
-                    initializeBoard();
-                }
-            }, 500); // Short delay before restarting to prevent flicker
+                initializeBoard();
+            }, 500);
         }
     </script>
 
