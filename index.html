@@ -79,7 +79,7 @@
             board[index] = "X";
             updateBoard();
             if (checkWinner("X")) return endGame("You Win!");
-            if (!board.includes("")) return endGame("It's a Draw!");
+            if (!board.includes("")) return endGame("It's a draw!");
 
             setTimeout(cpuMove, 500);
         }
@@ -111,8 +111,8 @@
 
         function endGame(message) {
             gameActive = false;
-            alert(message); // 🚨 Shows a browser alert with the game result!
-            location.reload(); // 🔄 Restart the game after alert
+            alert(message); // Shows a browser alert with the game result!
+            location.reload(); // Restart the game after alert
         }
     </script>
 
