@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>hCaptcha Verification</title>
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        h2 {
+            margin-bottom: 25px;
+            color: #333;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        .h-captcha {
+            margin: 20px auto;
+            display: inline-block; /* To center the widget */
+        }
+        .button-container {
+            margin-top: 25px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #emailDisplay {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: left;
+            display: none; /* Hidden by default, shown after "verification" */
+        }
+        #emailDisplay p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+        #emailDisplay strong {
+            color: #000;
+            font-size: 1.1em;
+        }
+        #emailDisplay a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        #emailDisplay a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        function onSubmit(token) {
+            // In a real application, you would send this 'token' to your server-side script
+            // for verification with hCaptcha's API.
+            // For this HTML-only example, we'll simulate success and show emails.
+
+            console.log('hCaptcha token:', token); // You'd send this to your backend
+
+            // Simulate successful verification (in a real scenario, this would be
+            // triggered by a successful response from your server-side verification)
+            document.getElementById('verificationForm').style.display = 'none'; // Hide form
+            document.getElementById('emailDisplay').style.display = 'block';    // Show emails
+            document.getElementById('message').innerText = 'Verification successful! Here are the contact emails:';
+        }
+
+        // This function is called if the hCaptcha expires or fails
+        function onExpired() {
+            alert('hCaptcha expired. Please try again.');
+            // You might want to re-enable the submit button here if it was disabled
+        }
+
+        function onError(error) {
+            console.error('hCaptcha error:', error);
+            alert('hCaptcha error. Please refresh the page and try again.');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2 id="message">Please complete the hCaptcha verification.</h2>
+
+        <form id="verificationForm" onsubmit="return false;">
+            <p>Click the "I am human" checkbox below:</p>
+            <div class="h-captcha"
+                 data-sitekey="eef6f9c2-1e04-471c-a7fe-dd2c063634d2"
+                 data-callback="onSubmit"
+                 data-expired-callback="onExpired"
+                 data-error-callback="onError">
+            </div>
+            <div class="button-container">
+                <button type="submit" disabled style="display: none;">Submit</button>
+            </div>
+        </form>
+
+        <div id="emailDisplay">
+            <p>For **Food Issues**, please contact:</p>
+            <p><strong>Email:</strong> <a href="mailto:foodissues.chocoluxe@gmail.com">foodissues.chocoluxe@gmail.com</a></p>
+            <br>
+            <p>For **Partnerships**, please contact:</p>
+            <p><strong>Email:</strong> <a href="mailto:chocoluxepartnerships@gmail.com">chocoluxepartnerships@gmail.com</a></p>
+        </div>
+    </div>
+</body>
+</html>
